@@ -1,4 +1,4 @@
-import { View, Text, Linking, Pressable, Stylesheet } from 'react-native';
+import { View, Text, Linking, Pressable} from 'react-native';
 import Button from '../components/button.jsx';
 import TextField from '../components/textField.jsx';
 
