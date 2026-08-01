@@ -1,8 +1,11 @@
+/*this is me*/
+
 import App from './App.jsx';
 import "../global.css";
 const main = () =>{
     return(
-        <App />
+        <App/>
+
     );
 }
 
