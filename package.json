@@ -8,6 +8,9 @@
     "eslint-config-expo": "~10.0.0",
     "expo": "~54.0.0",
     "expo-status-bar": "~3.0.9",
+    "mongodb": "^7.5.0",
+    "mongoose": "^9.9.1",
+    "mongose": "^0.0.2-security",
     "nativewind": "^4.2.6",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.1.0",
@@ -19,11 +22,19 @@
     "tailwindcss": "^3.4.19"
   },
   "scripts": {
-    "start": "expo start",
+    "run": "npx expo start index.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dev": "nodemon --env-file=.env ./backEnd/server.js"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "overrides": {
+    "postcss": "^8.5.18",
+    "uuid": "^11.1.1"
+  }
 }
