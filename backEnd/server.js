@@ -1,20 +1,10 @@
 const express = require ('express');
 const app = express();
 const User = require ('../middleware/user.middleware.js');
-const PORT = process.env.PORT;
+const PORT = procss.env.PORT;
 app.use(express.json());
 
-const mongoose = require('mongoose');
-
-const MONGO_URI = process.env.MONGO_URI;
-
-//<-----connection to server and database 
-app.get('/', (req,res)=> {
-    res.send(`Hello ${PORT}`)
-})
-
-mongoose.connect(MONGO_URI).then(()=>{
-    console.log (`connected to database!`);
+con(`connected to database!`);
 }).catch(()=>{
     console.log(`failed to connect to database`);
 });
