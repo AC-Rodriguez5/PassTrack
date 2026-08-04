@@ -1,7 +1,7 @@
 const express = require ('express');
 const app = express();
 const User = require ('../middleware/user.middleware.js');
-const PORT = process.env.PORT;
+const PORT = procss.env.PORT;
 app.use(express.json());
 
 const mongoose = require('mongoose');
