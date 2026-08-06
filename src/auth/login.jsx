@@ -1,8 +1,10 @@
 import { View, Text, Linking, Pressable} from 'react-native';
-import Button from '../components/button.jsx';
-import TextField from '../components/textField.jsx';
+import Button from '../components/button.components.jsx';
+import TextField from '../components/textField.components.jsx';
+import {useNavigation} from '@react-navigation/native';
 
 const Login = () => {
+    const navigation = useNavigation();
   return (
     <View className="flex-1 justify-center px-6 py-12">
 
@@ -42,13 +44,13 @@ const Login = () => {
             </View>
 
             <View className = 'mt-8'>
-                <Button name="Log in" variant="primary" size={65}/>
+                <Button name="Log in" onPress={()=>navigation.navigate("profile")}variant="primary" size={65}/>
             </View>
 
 
             <View className='items-center mt-2'>
                 <Text class="mt-10 text-center text-sm/6 text-gray-500">
-                    Dont Have an Account? < Pressable onPress={() => Linking.openURL('https://youtube.com')}><Text className = "font-semibold text-indigo-600 hover:text-indigo-500">Sign UP</Text></Pressable>
+                    Dont Have an Account? < Pressable onPress={() => navigation.navigate("register")}><Text className = "font-semibold text-indigo-600 hover:text-indigo-500">Sign UP</Text></Pressable>
                 </Text>
                 <Pressable onPress={() => Linking.openURL('https://youtube.com')}>
                     <Text className = "font-semibold text-indigo-600 hover:text-indigo-500">Forgot Password</Text>

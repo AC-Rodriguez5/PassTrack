@@ -1,9 +1,11 @@
-
-import Login from './auth/login.jsx'
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from './appNavigation/app.navigation.jsx'
 
 export default function App() {
   return (
-      <Login />
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
    
   );
 }
