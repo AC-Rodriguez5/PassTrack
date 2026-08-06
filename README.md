@@ -102,7 +102,7 @@ Open the application using:
 - [x] Project setup
 - [x] Authentication UI
 - [x] Login screen
-- [ ] Registration
+- [x] Registration
 - [ ] Dashboard
 - [ ] Password vault
 - [ ] Encryption
