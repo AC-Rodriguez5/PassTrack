@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TextInput, View } from 'react-native';
 
-const TextField = ({IDs,Type = 'text', Name, RequireAutocomplete = false, className = '', error = false, disabled = false}) => {
+const TextField = ({IDs,Type = 'text', Name, RequireAutocomplete = false, className = '', error = false, disabled = false, value, onChangeText}) => {
   const [isFocused, setIsFocused] = useState(false);
   const normalizedType = String(Type || 'text').toLowerCase();
   const isPassword = normalizedType === 'password';
@@ -26,7 +26,10 @@ const TextField = ({IDs,Type = 'text', Name, RequireAutocomplete = false, classN
         keyboardType={normalizedType === 'email' ? 'email-address' : 'default'}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        value ={value}
+        onChangeText ={onChangeText}
         className={`w-full rounded-2xl border px-4 py-3.5 text-base text-slate-900 ${borderStyle} ${disabled ? 'opacity-60' : ''}`}
+        
       />
     </View>
   );
