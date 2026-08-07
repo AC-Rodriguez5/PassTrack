@@ -1,4 +1,5 @@
 const User = require('../middleware/user.middleware.js');
+const bcrypt = require('bcrypt');
 
 //get all user in schema
 const getUser = async(req,res)=>{
@@ -35,17 +36,34 @@ const getUserById = async(req,res)=>{
 }
 
 //create user in schema
-const createUser = async (req,res) => {
-    try{
-        const checkUser = await User.findOne({email : req.body.email}).select('email');
-        const email = checkUser?.email;
-        if(!checkUser){
-            const user = await User.create(req.body);
-            return res.status(200).json(user);
-        }
+const registerUser = async (req,res) => {
+    console.log("REGISTER CONTROLLER HIT");
 
-        console.log(`the ${email} is existing`);
-        res.status(409).json({message : `the ${email} is existing`})
+    console.log(req.body);
+    try{
+        const{
+            firstName, middleName, lastName, email, password
+        } = req.body;
+
+        const checkUser = await User.findOne({email : req.body.email}).select('email');
+
+        if(checkUser){
+
+            console.log(`the ${email} is existing`);
+            return res.status(409).json({message : `the ${email} is existing`});
+            
+        }
+        console.log(req.body)
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser= new User({
+            firstName, middleName, lastName, email, password : hashedPassword
+        });
+
+        const savedUser = await newUser.save();
+        console.log(savedUser)
+        
+        res.status(201).json({message : 'account created succesfully'});    
+        console.log('account created succesfully')
 
     } catch(error){
         res.status(500).json({message : error.message});
@@ -91,5 +109,5 @@ const deleteUser = async(req,res)=>{
 
 
 module.exports = {
-    getUser, getUserById, createUser, updateUser, deleteUser
+    getUser, getUserById, registerUser, updateUser, deleteUser
 }
