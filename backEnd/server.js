@@ -34,6 +34,6 @@ mongoose.connect(MONGO_URI).then(()=>{
     console.log(`failed to connect to database`);
 });
 
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
  console.log(`Server runnning on ${PORT}`);
 })

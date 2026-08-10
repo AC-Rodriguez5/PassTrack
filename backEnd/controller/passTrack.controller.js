@@ -1,20 +1,58 @@
 const User = require('../middleware/user.middleware.js');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-//get all user in schema
-const getUser = async(req,res)=>{
+//Login function
+const loginUser = async(req,res)=>{
     try{
-        const users = await User.find({});
-
-        if(await User.countDocuments() === 0){
-            console.log(`empty schema`);     
-            return res.status(200).json({message : `empty schema`});
-            
+        
+        const {email, password} = req.body;
+        if(!email || !password){
+            return res.status(400).json({message : 'Email and password is required'});
         }
-        res.status(200).json(users);
 
-    }   catch (error){
-        res.status(500).json({message : error.message});
+        const user = await User.findOne({ email });
+        if(!user){
+            return res.status(401).json({message : 'Email or password is incorrect'});
+        }
+
+        const passwordMatch = await bcrypt.compare(
+            password, user.password
+        );
+
+        if(!passwordMatch){
+            return res.status(401).json({message : 'Email or password is incorrect'});
+        }
+
+        const token = jwt.sign({
+            userId: user._id,
+            email: user.email
+        },
+        
+            process.env.JWT_SECRET,
+        {
+            expiresIn: '1d'
+        });
+
+        return res.status(200).json({
+            message : "Login succesfull",token,
+            user:{
+                userId: user._id,
+                firstName: user.firstName,
+                middleName: user.middleName,
+                lastName: user.lastName,
+                email: user.email
+
+            }
+        });
+    
+    }catch(error){
+        console.log('error login', error);
+
+        return res.status(500).json({
+            message : 'server error', error
+        });
+
     }
 }
 
@@ -37,8 +75,7 @@ const getUserById = async(req,res)=>{
 
 //create user in schema
 const registerUser = async (req,res) => {
-    console.log("REGISTER CONTROLLER HIT");
-
+    
     console.log(req.body);
     try{
         const{
@@ -109,5 +146,5 @@ const deleteUser = async(req,res)=>{
 
 
 module.exports = {
-    getUser, getUserById, registerUser, updateUser, deleteUser
+    loginUser, getUserById, registerUser, updateUser, deleteUser
 }

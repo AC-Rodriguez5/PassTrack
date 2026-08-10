@@ -2,9 +2,21 @@ import { View, Text, Linking, Pressable} from 'react-native';
 import Button from '../components/button.components.jsx';
 import TextField from '../components/textField.components.jsx';
 import {useNavigation} from '@react-navigation/native';
+import {useState} from 'react';
+import { handleLogin } from '../services/auth.services.js';
 
 const Login = () => {
     const navigation = useNavigation();
+
+    const[email, setEmail] = useState("")
+    const [password, setPassword] = useState("");
+
+const handleSubmit = async()=>{
+        await handleLogin({
+            email, password, navigation
+        });
+    }
+
   return (
     <View className="flex-1 justify-center px-6 py-12">
 
@@ -25,6 +37,8 @@ const Login = () => {
                             Name="Email Address"
                             Type="email"
                             RequireAutocomplete={true}
+                            value = {email}
+                            onChangeText = {setEmail}
                             />
                     </View>
             </View>
@@ -39,12 +53,17 @@ const Login = () => {
                                 Name="Password"
                                 Type="password"
                                 RequireAutocomplete={true}
+                                value = {password}
+                                onChangeText = {setPassword}
                                 />
                     </View>
             </View>
 
             <View className = 'mt-8'>
-                <Button name="Log in" onPress={()=>navigation.navigate("profile")}variant="primary" size={65}/>
+                <Button name="Log in" onPress={()=> {
+                    console.log('login pressed');
+                    handleSubmit();
+                }}variant="primary" size={65}/>
             </View>
 
 

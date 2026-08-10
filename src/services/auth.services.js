@@ -1,5 +1,7 @@
 import axios from 'axios';
 import {API_URI} from '../config/api.config.js'
+
+//register new aacounts
 const handleRegister = async ({
             firstName,
             middleName,
@@ -9,8 +11,6 @@ const handleRegister = async ({
             confirmPassword,
             navigation,
         }) => {
-       
-
             try{
               
                 if(password !== confirmPassword){
@@ -19,21 +19,40 @@ const handleRegister = async ({
                 }
                 console.log(`API_URI: ${API_URI}/user/register`)
 
-
                 const response = await axios.post(
                     `${API_URI}/user/register`,{
                         firstName, middleName, lastName, email, password
                 });
                 console.log(response.data);
-
-                
                 alert(`data created succesfull`);
                 
                 navigation.navigate("Login");
 
             }catch(error){
-                alert('something went wrong');
+                alert('something went wrong'.error);
             }
 }
 
-export {handleRegister};
+const handleLogin = async ({
+    email, password, navigation
+    }) => {
+        try{
+            const response = await axios.post(
+                `${API_URI}/user/login`,{
+                    email, password
+                }
+            );
+            console.log(response.data);
+
+            navigation.navigate("home");
+
+        }catch(error){
+
+        }
+}
+
+
+
+
+
+export {handleRegister, handleLogin};
