@@ -120,16 +120,7 @@ export default function Register (){
                         name="Create Account"
                         onPress={() => {
                             console.log("BUTTON PRESSED");
-
-                            handleRegister({
-                                firstName,
-                                middleName,
-                                lastName,
-                                email,
-                                password,
-                                confirmPassword,
-                                navigation,
-                            });
+                            handleSubmit();
                         }}
                         variant="primary"
                         size={65}
