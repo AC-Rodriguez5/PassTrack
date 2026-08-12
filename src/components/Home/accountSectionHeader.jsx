@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 
-export default function AccountSectionHeader({ count }) {
+export default function AccountSectionHeader({ count = 15 }) {
     return (
         <View className="mb-2 flex-row items-center justify-between">
 

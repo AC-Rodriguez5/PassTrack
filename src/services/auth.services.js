@@ -44,7 +44,7 @@ const handleLogin = async ({
             );
             console.log(response.data);
 
-            navigation.navigate("home");
+            navigation.navigate("MainTabs");
 
         }catch(error){
 
