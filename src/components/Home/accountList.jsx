@@ -1,7 +1,10 @@
 import { FlatList } from 'react-native';
 import AccountCard from './accountCard.jsx';
 
+import {useNavigation} from '@react-navigation/native'
+
 export default function AccountList({ accounts }) {
+    const navigation = useNavigation();
     return (
         <FlatList
             data={accounts}
@@ -10,7 +13,7 @@ export default function AccountList({ accounts }) {
                 <AccountCard
                     account={item}
                     category={item.category}
-                    onPress={() => console.log(item)}
+                    onPress={() =>navigation.navigate("cardInfo")}
                 />
             )}
             showsVerticalScrollIndicator={false}

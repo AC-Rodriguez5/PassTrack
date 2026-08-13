@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function AccountCard({ account,category, onPress }) {
    const accountColors = {
@@ -8,6 +9,7 @@ export default function AccountCard({ account,category, onPress }) {
         banking: 'bg-green-600',
         finance: 'bg-green-600'
     };
+    const navigation = useNavigation();
 
     return (
         <Pressable
