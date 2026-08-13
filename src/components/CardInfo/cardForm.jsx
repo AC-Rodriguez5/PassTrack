@@ -3,7 +3,7 @@ import{ ShieldCheck, Copy, Eye, Info, Calendar, Tag, Pencil, Trash2 } from 'luci
 
 export default function CardInfoForm(){
     return(
-            <View className="bg-white rounded-2xl p-4 mb-4 border border-slate-100 ml-6 mr-6">
+            <View className="bg-white rounded-2xl p-4 mb-4 border border-slate-100 ml-6 mr-6 mt-5">
                 <View className="flex-row items-center mb-3">
                     <ShieldCheck size={18} color="#3b82f6" />
                     <Text className="ml-2 font-bold text-blue-500 text-sm">

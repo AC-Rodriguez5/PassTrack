@@ -3,8 +3,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../auth/login.jsx';
 import Register from '../auth/register.jsx';
 import ForgotPassword from '../auth/forgotPassword.jsx';
-import onClickCardInfo from '../Tabs/onClickTabs/cardInfo.tabs.jsx';
+import OnClickCardInfo from '../Tabs/onClickTabs/cardInfo.tabs.jsx';
 import Security from '../Tabs/security.tab.jsx';
+import DeleteInfo from '../Tabs/onClickTabs/deleteCard.tabs.jsx';
 
 import BottomNavigation from './bottomNav.jsx';
 
@@ -46,7 +47,11 @@ export default function appNavigator(){
 
             <Stack.Screen 
                 name ='cardInfo'
-                component = {onClickCardInfo}
+                component = {OnClickCardInfo}
+            />
+            <Stack.Screen
+                name='deleteInfo'
+                component = {DeleteInfo}
             />
 
 

@@ -81,7 +81,7 @@ export default function AddAccount() {
             <Button 
                 name="Cancel" 
                 onPress={() => navigation.navigate("Home") }
-                variant="danger" 
+                variant="cancel" 
                 size={0} 
                 className="mt-3"
             />

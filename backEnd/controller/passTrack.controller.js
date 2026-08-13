@@ -5,18 +5,18 @@ const jwt = require('jsonwebtoken');
 //Login function
 const loginUser = async(req,res)=>{
     try{
-        
+        //get the email and pass
         const {email, password} = req.body;
-        if(!email || !password){
+        if(!email || !password){//check if email and password is filled both
             return res.status(400).json({message : 'Email and password is required'});
         }
 
         const user = await User.findOne({ email });
-        if(!user){
+        if(!user){//scan the schema is there is an email existing
             return res.status(401).json({message : 'Email or password is incorrect'});
         }
 
-        const passwordMatch = await bcrypt.compare(
+        const passwordMatch = await bcrypt.compare(//compare the password if match what is in the schema
             password, user.password
         );
 
@@ -24,11 +24,10 @@ const loginUser = async(req,res)=>{
             return res.status(401).json({message : 'Email or password is incorrect'});
         }
 
-        const token = jwt.sign({
+        const token = jwt.sign({//generate token once logged in
             userId: user._id,
             email: user.email
         },
-        
             process.env.JWT_SECRET,
         {
             expiresIn: '1d'
