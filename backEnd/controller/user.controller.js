@@ -1,4 +1,4 @@
-const User = require('../middleware/user.middleware.js');
+const User = require('../models/user.models.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -26,7 +26,7 @@ const loginUser = async(req,res)=>{
 
         const token = jwt.sign({//generate token once logged in
             userId: user._id,
-            email: user.email
+            email: user.email,
         },
             process.env.JWT_SECRET,
         {
@@ -75,7 +75,6 @@ const getUserById = async(req,res)=>{
 //create user in schema
 const registerUser = async (req,res) => {
     
-    console.log(req.body);
     try{
         const{
             firstName, middleName, lastName, email, password
@@ -89,14 +88,14 @@ const registerUser = async (req,res) => {
             return res.status(409).json({message : `the ${email} is existing`});
             
         }
-        console.log(req.body)
+   
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser= new User({
             firstName, middleName, lastName, email, password : hashedPassword
         });
 
         const savedUser = await newUser.save();
-        console.log(savedUser)
+        
         
         res.status(201).json({message : 'account created succesfully'});    
         console.log('account created succesfully')
@@ -122,20 +121,9 @@ const updateUser = async(req,res)=>{
 }
 
 //delete user in schema
-const deleteUser = async(req,res)=>{
+const logoutUser = async(req,res)=>{
     try{
-        const { id } = req.params;
-        const user = await User.findById(id);
-        
-
-        if(!user){
-            return res.status(404).json({message : `email not found`});
-        }
-        
-        const  email = user.email;
-        await User.findByIdAndDelete(id);
-        return res.status(200).json({message : `email: ${email} has been deleted`});
-        
+        console.log('for the moment underdevelopment of log out');
 
     }   catch (error){
         return res.status(500).json({message : error.message});
@@ -145,5 +133,5 @@ const deleteUser = async(req,res)=>{
 
 
 module.exports = {
-    loginUser, getUserById, registerUser, updateUser, deleteUser
+    loginUser, getUserById, registerUser, updateUser, logoutUser
 }

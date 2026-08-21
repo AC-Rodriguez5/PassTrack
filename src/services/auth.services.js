@@ -17,10 +17,10 @@ const handleRegister = async ({
                     alert(`password do not match`);
                     return;
                 }
-                console.log(`API_URI: ${API_URI}/user/register`)
+                console.log(`API_URI: ${API_URI}/auth/register`)
 
                 const response = await axios.post(
-                    `${API_URI}/user/register`,{
+                    `${API_URI}/auth/register`,{
                         firstName, middleName, lastName, email, password
                 });
                 console.log(response.data);
@@ -29,7 +29,8 @@ const handleRegister = async ({
                 navigation.navigate("Login");
 
             }catch(error){
-                alert('something went wrong'.error);
+                const message = error.response?.data?.message || error.message || 'something went wrong';
+                alert(message);
             }
 }
 
@@ -38,7 +39,7 @@ const handleLogin = async ({
     }) => {
         try{
             const response = await axios.post(
-                `${API_URI}/user/login`,{
+                `${API_URI}/auth/login`,{
                     email, password
                 }
             );
@@ -47,7 +48,8 @@ const handleLogin = async ({
             navigation.navigate("MainTabs");
 
         }catch(error){
-
+            const message = error.response?.data?.message || error.message || 'something went wrong';
+            alert(message);
         }
 }
 
