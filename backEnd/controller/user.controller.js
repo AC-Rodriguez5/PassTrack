@@ -94,11 +94,10 @@ const registerUser = async (req,res) => {
             firstName, middleName, lastName, email, password : hashedPassword
         });
 
-        const savedUser = await newUser.save();
+        await newUser.save();
         
-        
-        res.status(201).json({message : 'account created succesfully'});    
         console.log('account created succesfully')
+        return res.status(201).json({message : 'account created succesfully'});    
 
     } catch(error){
         res.status(500).json({message : error.message});

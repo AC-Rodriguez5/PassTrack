@@ -3,11 +3,12 @@ const router = express.Router();
 const auth = require('../middleware/auth.middleware.js')
 const {getAccount, createAccount, getAccountById, updateAccount, deleteAccount} = require ('../controller/account.controller.js');
 
+const {authLimiter} = require('../middleware/limites.middleware.js');
 
-router.post('/',auth,createAccount);
-router.get('/',auth,getAccount);
-router.get('/:id',auth,getAccountById);
-router.put('/:id',auth,updateAccount);
-router.delete('/:id',auth,deleteAccount);
+router.post('/',auth,authLimiter,createAccount);
+router.get('/',auth,authLimiter,getAccount);
+router.get('/:id',auth,authLimiter,getAccountById);
+router.put('/:id',auth,authLimiter,updateAccount);
+router.delete('/:id',auth,authLimiter,deleteAccount);
 
 module.exports = router;

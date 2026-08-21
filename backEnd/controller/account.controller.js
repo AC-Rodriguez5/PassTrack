@@ -69,9 +69,23 @@ const getAccountById = async(req,res)=>{
 const updateAccount = async(req,res)=>{
     try{
         const { id } = req.params;
+        const {name, username, category, websiteUrl, notes, status, renewalDate, expirationDate} = req.body;
+
         const account  = await Account.findOneAndUpdate({
             _id : id,
             owner : req.user.userId
+        },{
+            name,
+            username,
+            category,
+            websiteUrl,
+            notes,
+            status,
+            renewalDate,
+            expirationDate
+        },{
+            new: true,
+            runValidators: true
         });
         if(!account){
             return res.status(404).json({ message : `account not found` });
@@ -90,18 +104,6 @@ const deleteAccount = async(req,res)=>{
         const account = await Account.findOneAndDelete({
             _id : id,
             owner : req.user.userId
-        },{
-            name,
-            username,
-            category,
-            websiteUrl,
-            notes,
-            status,
-            renewalDate,
-            expirationDate
-        },{
-            new: true,
-            runValidators: true
         });
         if(!account){
             return res.status(404).json({message : `account not found`})
