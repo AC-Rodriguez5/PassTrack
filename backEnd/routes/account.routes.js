@@ -5,10 +5,10 @@ const {getAccount, createAccount, getAccountById, updateAccount, deleteAccount} 
 
 const {authLimiter} = require('../middleware/limites.middleware.js');
 
-router.post('/',auth,authLimiter,createAccount);
-router.get('/',auth,authLimiter,getAccount);
-router.get('/:id',auth,authLimiter,getAccountById);
-router.put('/:id',auth,authLimiter,updateAccount);
-router.delete('/:id',auth,authLimiter,deleteAccount);
+router.post('/',authLimiter,auth,createAccount);
+router.get('/',authLimiter,auth,getAccount);
+router.get('/:id',authLimiter,auth,getAccountById);
+router.put('/:id',authLimiter,auth,updateAccount);
+router.delete('/:id',authLimiter,auth,deleteAccount);
 
 module.exports = router;
