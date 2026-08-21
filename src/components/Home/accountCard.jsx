@@ -1,15 +1,24 @@
 import { View, Text, Pressable } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
+import {useNavigation} from '@react-navigation/native';
 
-export default function AccountCard({ account, onPress }) {
+export default function AccountCard({ account,category, onPress }) {
+   const accountColors = {
+        social: 'bg-blue-500',
+        email: 'bg-red-500',
+        banking: 'bg-green-600',
+        finance: 'bg-green-600'
+    };
+    const navigation = useNavigation();
+
     return (
         <Pressable
             onPress={onPress}
-            className="mb-2 flex-row items-center rounded-xl border border-gray-200 bg-white px-3 py-3"
+            className="mb-2 flex-row items-center rounded-xl border border-gray-200 bg-white px-5 py-5"
         >
 
             {/* Icon */}
-            <View className="h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+            <View className={`h-12 w-12 items-center justify-center rounded-full ${accountColors[account.category]}`}>
                 <Text className="text-xs font-bold text-white">
                     {account.initials}
                 </Text>

@@ -1,22 +1,22 @@
-const User = require('../middleware/user.middleware.js');
+const User = require('../models/user.models.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 //Login function
 const loginUser = async(req,res)=>{
     try{
-        
+        //get the email and pass
         const {email, password} = req.body;
-        if(!email || !password){
+        if(!email || !password){//check if email and password is filled both
             return res.status(400).json({message : 'Email and password is required'});
         }
 
         const user = await User.findOne({ email });
-        if(!user){
+        if(!user){//scan the schema is there is an email existing
             return res.status(401).json({message : 'Email or password is incorrect'});
         }
 
-        const passwordMatch = await bcrypt.compare(
+        const passwordMatch = await bcrypt.compare(//compare the password if match what is in the schema
             password, user.password
         );
 
@@ -24,11 +24,10 @@ const loginUser = async(req,res)=>{
             return res.status(401).json({message : 'Email or password is incorrect'});
         }
 
-        const token = jwt.sign({
+        const token = jwt.sign({//generate token once logged in
             userId: user._id,
-            email: user.email
+            email: user.email,
         },
-        
             process.env.JWT_SECRET,
         {
             expiresIn: '1d'
@@ -76,7 +75,6 @@ const getUserById = async(req,res)=>{
 //create user in schema
 const registerUser = async (req,res) => {
     
-    console.log(req.body);
     try{
         const{
             firstName, middleName, lastName, email, password
@@ -90,17 +88,16 @@ const registerUser = async (req,res) => {
             return res.status(409).json({message : `the ${email} is existing`});
             
         }
-        console.log(req.body)
+   
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser= new User({
             firstName, middleName, lastName, email, password : hashedPassword
         });
 
-        const savedUser = await newUser.save();
-        console.log(savedUser)
+        await newUser.save();
         
-        res.status(201).json({message : 'account created succesfully'});    
         console.log('account created succesfully')
+        return res.status(201).json({message : 'account created succesfully'});    
 
     } catch(error){
         res.status(500).json({message : error.message});
@@ -123,20 +120,9 @@ const updateUser = async(req,res)=>{
 }
 
 //delete user in schema
-const deleteUser = async(req,res)=>{
+const logoutUser = async(req,res)=>{
     try{
-        const { id } = req.params;
-        const user = await User.findById(id);
-        
-
-        if(!user){
-            return res.status(404).json({message : `email not found`});
-        }
-        
-        const  email = user.email;
-        await User.findByIdAndDelete(id);
-        return res.status(200).json({message : `email: ${email} has been deleted`});
-        
+        console.log('for the moment underdevelopment of log out');
 
     }   catch (error){
         return res.status(500).json({message : error.message});
@@ -146,5 +132,5 @@ const deleteUser = async(req,res)=>{
 
 
 module.exports = {
-    loginUser, getUserById, registerUser, updateUser, deleteUser
+    loginUser, getUserById, registerUser, updateUser, logoutUser
 }

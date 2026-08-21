@@ -3,12 +3,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../auth/login.jsx';
 import Register from '../auth/register.jsx';
 import ForgotPassword from '../auth/forgotPassword.jsx';
-
-import Home from '../Tabs/home.tab.jsx';
-import Add from '../Tabs/add.tab.jsx';
-import Category from '../Tabs/category.tab.jsx';
-import Profile from '../Tabs/profile.tab.jsx';
+import OnClickCardInfo from '../Tabs/onClickTabs/cardInfo.tabs.jsx';
 import Security from '../Tabs/security.tab.jsx';
+import DeleteInfo from '../Tabs/onClickTabs/deleteCard.tabs.jsx';
+
+import BottomNavigation from './bottomNav.jsx';
 
 
 const Stack = createNativeStackNavigator();
@@ -31,32 +30,29 @@ export default function appNavigator(){
                 name='register'
                 component = {Register}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
                 name='forgotPass'
                 component = {ForgotPassword}
-            /> */}
+            />
 
-
-            <Stack.Screen
-                name='home'
-                component = {Home}
+            <Stack.Screen 
+                name='MainTabs'
+                component ={BottomNavigation}
             />
-            {/* <Stack.Screen
-                name='add'
-                component = {Add}
-            />
+            
             <Stack.Screen
-                name='category'
-                component = {Category}
-            /> */}
-            <Stack.Screen
-                name='profile'
-                component = {Profile}
-            />
-            {/* <Stack.Screen
                 name='security'
                 component = {Security}
-            /> */}
+            />
+
+            <Stack.Screen 
+                name ='cardInfo'
+                component = {OnClickCardInfo}
+            />
+            <Stack.Screen
+                name='deleteInfo'
+                component = {DeleteInfo}
+            />
 
 
 

@@ -10,7 +10,7 @@ export default function AccountSearch() {
             <TextInput
                 placeholder="Search accounts"
                 placeholderTextColor="#B8BFCA"
-                className="ml-2 flex-1 text-sm text-gray-800"
+                className="ml-2 flex-1 text-sm text-gray-800 focus:outline-none"
             />
 
             <Pressable>

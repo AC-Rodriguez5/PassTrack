@@ -6,21 +6,22 @@ const app = express();
 const PORT = process.env.PORT;
 
 const userRoutes = require ('./routes/user.route.js');
+const accountRoutes = require('./routes/account.routes.js')
+
 const mongoose = require('mongoose');
 
 const MONGO_URI = process.env.MONGO_URI;
 
 const cors = require('cors');
 
-//<----MIDDLEWARE--->
-app.use(cors({
-  origin: 'http://localhost:8081',
-  credentials: true
-}));
+// Allow all origins (Recommended for Expo Go local testing)
+app.use(cors());
 
 app.use(express.json());
 
-app.use('/api/user', userRoutes);
+//api communication
+app.use('/api/auth', userRoutes);//for logging and registering
+app.use('/api/accounts', accountRoutes);//for accounts info card
 
 
 //<-----connection to server and database 
