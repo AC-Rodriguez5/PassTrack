@@ -2,15 +2,19 @@ const User = require('../models/user.models.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const { loginUserSchema, registerUserSchema } = require('../validation/auth.validation.js');
+
 //Login function
 const loginUser = async(req,res)=>{
     try{
-        //get the email and pass
-        const {email, password} = req.body;
-        if(!email || !password){//check if email and password is filled both
-            return res.status(400).json({message : 'Email and password is required'});
+        const result = loginUserSchema.safeParse(req.body);
+        if(!result.success){
+            return res.status(400).json({message : `Invalid login data`, errors: result.error.issues});
         }
 
+        //get the email and pass after validated
+        const {email, password} = result.data;
+   
         const user = await User.findOne({ email });
         if(!user){//scan the schema is there is an email existing
             return res.status(401).json({message : 'Email or password is incorrect'});
@@ -55,47 +59,33 @@ const loginUser = async(req,res)=>{
     }
 }
 
-//get user by ID
-const getUserById = async(req,res)=>{
-    try{
-        const { id } = req.params;
-        const user = await User.findById(id);
-
-        if (!user) {
-            return res.status(404).json({ message : 'user not found' });
-        }
-
-        res.status(200).json(user);
-
-    }   catch (error){
-        res.status(500).json({message : error.message});
-    }
-}
 
 //create user in schema
 const registerUser = async (req,res) => {
     
     try{
+
+        const result = registerUserSchema.safeParse(req.body)
+        if(!result.success){
+            return res.status(400).json({message:`invalid data`, errors: result.error.issues});
+        } 
         const{
             firstName, middleName, lastName, email, password
-        } = req.body;
+        } = result.data;
 
-        const checkUser = await User.findOne({email : req.body.email}).select('email');
+        const checkUser = await User.findOne({email}).select('email');
 
         if(checkUser){
-
             console.log(`the ${email} is existing`);
             return res.status(409).json({message : `the ${email} is existing`});
-            
         }
-   
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser= new User({
             firstName, middleName, lastName, email, password : hashedPassword
         });
 
         await newUser.save();
-        
         console.log('account created succesfully')
         return res.status(201).json({message : 'account created succesfully'});    
 
@@ -132,5 +122,5 @@ const logoutUser = async(req,res)=>{
 
 
 module.exports = {
-    loginUser, getUserById, registerUser, updateUser, logoutUser
+    loginUser, registerUser, updateUser, logoutUser
 }

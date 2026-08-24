@@ -1,23 +1,18 @@
 const Account = require ('../models/account.models.js');
+const { updateAccountSchema, createAccountSchema } = require ('../validation/account.validation.js');
 
 
 //creating accountInfo
 const createAccount = async(req,res) =>{
     try{
-        const {name,username,category,websiteUrl,notes,status,renewalDate,expirationDate}=req.body;
-        if(!name){
-            return res.status(400).json({message: 'Account name is required'});
+        const result= createAccountSchema.safeParse(req.body);
+        if(!result.success){
+            return res.status(400).json({message : `Invalid Account data/s`, errors : result.error.issues});
         }
+
         const account = await Account.create({
             owner: req.user.userId,
-            name,
-            username,
-            category,
-            websiteUrl,
-            notes,
-            status,
-            renewalDate,
-            expirationDate
+            ...result.data
         });
 
         return res.status(201).json({
@@ -43,8 +38,6 @@ const getAccount = async(req,res) => {
     }
 }
 
-
-
 const getAccountById = async(req,res)=>{
     try{
         const { id } = req.params;
@@ -69,21 +62,19 @@ const getAccountById = async(req,res)=>{
 const updateAccount = async(req,res)=>{
     try{
         const { id } = req.params;
-        const {name, username, category, websiteUrl, notes, status, renewalDate, expirationDate} = req.body;
+        const result= updateAccountSchema.safeParse(req.body);
+
+        if(!result.success){
+            return res.status(400).json({message : `Invalid Account update data/s`, errors : result.error.issues});
+        }
+        const updateData = result.data;
 
         const account  = await Account.findOneAndUpdate({
             _id : id,
             owner : req.user.userId
-        },{
-            name,
-            username,
-            category,
-            websiteUrl,
-            notes,
-            status,
-            renewalDate,
-            expirationDate
-        },{
+        },
+            updateData,
+        {
             new: true,
             runValidators: true
         });
