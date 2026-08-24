@@ -5,6 +5,8 @@ module.exports = defineConfig([
   {
     ignores: [
       "node_modules/**",
+      "dist/**",
+      "web-build/**",
       "eslint.config.js",
     ],
   },
