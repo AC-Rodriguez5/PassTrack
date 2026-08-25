@@ -1,141 +1,136 @@
-import { View, Text, Pressable} from 'react-native';
-import Button from '../components/button.components.jsx';
-import TextField from '../components/textField.components.jsx';
-import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react';
-import { handleRegister } from '../services/auth.services.js'
+import { Text, View } from 'react-native';
+import { Check, Mail, UserRound } from 'lucide-react-native';
+import {
+  AppHeader,
+  Field,
+  PasswordField,
+  PrimaryButton,
+  Screen,
+  SecondaryButton,
+} from '../design/ui.jsx';
+import { useAppTheme } from '../context/theme.context.jsx';
+import { getFieldErrors, registerFormSchema } from '../validation/forms.validation.js';
 
+const initialForm = {
+  firstName: '',
+  middleName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+};
 
-export default function Register (){
-    const[firstName, setFirstName] = useState("");
-    const[middleName, setMiddleName] = useState("");
-    const[lastName, setLastName] = useState("");
-    
-    const[email, setEmail] = useState("");
-    const[password, setPassword] = useState("");
+export default function Register({ navigation }) {
+  const { colors } = useAppTheme();
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState({});
 
-    const[confirmPassword, setConfirmPassword] = useState("");
+  const updateField = (field) => (value) => {
+    setForm((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: undefined }));
+  };
 
-    const navigation = useNavigation();
+  const requirements = [
+    { label: '8+ characters', met: form.password.length >= 8 },
+    { label: 'Upper & lowercase', met: /[a-z]/.test(form.password) && /[A-Z]/.test(form.password) },
+    { label: 'A number', met: /\d/.test(form.password) },
+    { label: 'A special character', met: /[^A-Za-z0-9]/.test(form.password) },
+  ];
 
-    const handleSubmit = async () => {
-        await handleRegister({
-            firstName,
-            middleName,
-            lastName,
-            email,
-            password,
-            confirmPassword,
-            navigation,
-        });
-    };
+  const submit = () => {
+    const result = registerFormSchema.safeParse(form);
+    if (!result.success) {
+      setErrors(getFieldErrors(result));
+      return;
+    }
 
-    return (
-    <View className="flex-1 justify-center px-6 py-12">
+    navigation.replace('EmailVerification', {
+      email: result.data.email,
+      purpose: 'registration',
+    });
+  };
 
-            <View className="w-full items-center mb-10">
-                <Text className="mt-10 text-center text-2xl font-bold text-gray-900">
-                    Create Account
-                </Text>
-                <Text className='text-gray-400'>Sign Up to start managing your passwords.</Text>
+  return (
+    <Screen>
+      <AppHeader
+        title="Create account"
+        subtitle="Build a private vault that is yours alone."
+        onBack={() => navigation.goBack()}
+      />
+
+      <Field
+        label="First name"
+        placeholder="Alex"
+        value={form.firstName}
+        onChangeText={updateField('firstName')}
+        error={errors.firstName}
+        autoCapitalize="words"
+        icon={<UserRound size={18} color={colors.muted} />}
+      />
+      <Field
+        label="Middle name (optional)"
+        placeholder="Santos"
+        value={form.middleName}
+        onChangeText={updateField('middleName')}
+        error={errors.middleName}
+        autoCapitalize="words"
+      />
+      <Field
+        label="Last name"
+        placeholder="Rodriguez"
+        value={form.lastName}
+        onChangeText={updateField('lastName')}
+        error={errors.lastName}
+        autoCapitalize="words"
+      />
+      <Field
+        label="Email address"
+        placeholder="alex@example.com"
+        value={form.email}
+        onChangeText={updateField('email')}
+        error={errors.email}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoComplete="email"
+        icon={<Mail size={18} color={colors.muted} />}
+      />
+      <PasswordField
+        label="Password"
+        value={form.password}
+        onChangeText={updateField('password')}
+        error={errors.password}
+        autoComplete="new-password"
+      />
+
+      <View className="mb-5 rounded-xl border border-line bg-surface p-4">
+        <Text className="mb-3 text-sm font-medium text-ink">A strong password includes</Text>
+        <View className="flex-row flex-wrap">
+          {requirements.map((item) => (
+            <View key={item.label} className="mb-2 w-1/2 flex-row items-center pr-2">
+              <View className={`h-5 w-5 items-center justify-center rounded-full ${item.met ? 'bg-accent-soft' : 'border border-line'}`}>
+                {item.met ? <Check size={12} color={colors.accent} /> : null}
+              </View>
+              <Text className="ml-2 text-xs text-muted">{item.label}</Text>
             </View>
-
-            <View className="mt-10 w-full">
-            
-            <View className = 'mt-2'>
-                    <Text className="block text-sm/6 font-medium text-gray-900">Full Name</Text>
-                        <View className='mb-2'>
-                            <TextField
-                                IDs="lastName"
-                                Name="Last name"
-                                Type="text"
-                                RequireAutocomplete={true}
-                                value = {lastName}
-                                onChangeText = {setLastName}
-                                />
-                                <TextField className ='mt-2'
-                                IDs="firstName"
-                                Name="First name"
-                                Type="text"
-                                RequireAutocomplete={true}
-                                value = {firstName}
-                                onChangeText = {setFirstName}
-                                />
-                                <TextField className = 'mt-2'
-                                IDs="middleName"
-                                Name="Middle name (optional)"
-                                Type="email"
-                                RequireAutocomplete={false}
-                                value = {middleName}
-                                onChangeText={setMiddleName}
-                                />
-                        </View>
-                </View>
-
-                <View className = 'mt-2'>
-                    <Text className="block text-sm/6 font-medium text-gray-900"> Email</Text>
-                        <View className='mb-2'>
-                            <TextField
-                                IDs="email"
-                                Name="Juandelacruz@gmail.com"
-                                Type="email"
-                                RequireAutocomplete={true}
-                                value = {email}
-                                onChangeText = {setEmail}
-                            />
-                        </View>
-                </View>
-            
-            <View className = 'mt-2'>
-                    <View className = "flex-row items-center justify-between">
-                        <Text className="block text-sm/6 font-medium text-gray-900">Password</Text>
-                    </View>
-                        <View className='mb-2'>
-                            <TextField
-                                    IDs="password"
-                                    Name="Password"
-                                    Type="password"
-                                    RequireAutocomplete={true}
-                                    value = {password}
-                                    onChangeText = {setPassword}
-                                    />
-                        </View>
-                        <View className = "flex-row items-center justify-between">
-                        <Text className="block text-sm/6 font-medium text-gray-900">Confirm Password</Text>
-                    </View>
-                        <View className='mb-2'>
-                            <TextField
-                                    IDs="confirmPassword"
-                                    Name="Password"
-                                    Type="password"
-                                    RequireAutocomplete={true}
-                                    value ={confirmPassword}
-                                    onChangeText= {setConfirmPassword}
-                                    />
-                        </View>
-                </View>
-
-                <View className = 'mt-8'>
-                    <Button
-                        name="Create Account"
-                        onPress={() => {
-                            console.log("BUTTON PRESSED");
-                            handleSubmit();
-                        }}
-                        variant="primary"
-                        size={65}
-                    />
-                </View>
-
-
-                <View className='items-center mt-2'>
-                    <Text className="mt-1 text-center text-sm/6 text-gray-500">
-                        Already have an account? < Pressable onPress={()=> navigation.navigate("Login")}><Text className = "font-semibold text-indigo-600 hover:text-indigo-500"> 
-                            Login</Text></Pressable>
-                    </Text>
-                </View>
-    
-            </View>
+          ))}
         </View>
+      </View>
+
+      <PasswordField
+        label="Confirm password"
+        value={form.confirmPassword}
+        onChangeText={updateField('confirmPassword')}
+        error={errors.confirmPassword}
+        autoComplete="new-password"
+      />
+
+      <View className="mt-2">
+        <PrimaryButton label="Create account" onPress={submit} />
+      </View>
+      <View className="mt-3">
+        <SecondaryButton label="Already have an account? Sign in" onPress={() => navigation.navigate('Login')} />
+      </View>
+    </Screen>
   );
-} 
+}

@@ -1,84 +1,142 @@
-import { View, Text, Linking, Pressable} from 'react-native';
-import Button from '../components/button.components.jsx';
-import TextField from '../components/textField.components.jsx';
-import {useNavigation} from '@react-navigation/native';
-import {useState} from 'react';
-import { handleLogin } from '../services/auth.services.js';
+import { useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Mail } from 'lucide-react-native';
+import {
+  BrandMark,
+  Field,
+  PasswordField,
+  PrimaryButton,
+  Screen,
+  SecondaryButton,
+  MotionPressable,
+} from '../design/ui.jsx';
+import { useAppTheme } from '../context/theme.context.jsx';
+import { getFieldErrors, loginFormSchema } from '../validation/forms.validation.js';
 
-const Login = () => {
-    const navigation = useNavigation();
+const providers = [
+  { name: 'Google', icon: 'google', iconColor: '#4285F4' },
+  { name: 'Facebook', icon: 'facebook-f', iconColor: '#1877F2' },
+  { name: 'Apple', icon: 'apple' },
+];
 
-    const[email, setEmail] = useState("")
-    const [password, setPassword] = useState("");
+function ProviderButton({ provider, onPress, inkColor }) {
+  return (
+    <MotionPressable
+      onPress={onPress}
+      containerClassName="mb-3"
+      className="relative h-[52px] w-full flex-row items-center justify-center rounded-xl border border-line bg-surface px-14"
+      accessibilityRole="button"
+      accessibilityLabel={`Continue with ${provider.name}`}
+    >
+      <View className="absolute left-4 h-8 w-8 items-center justify-center">
+        <FontAwesome6
+          name={provider.icon}
+          iconStyle="brand"
+          size={20}
+          color={provider.iconColor ?? inkColor}
+        />
+      </View>
+      <Text className="text-[15px] font-semibold text-ink" numberOfLines={1}>
+        Continue with {provider.name}
+      </Text>
+    </MotionPressable>
+  );
+}
 
-const handleSubmit = async()=>{
-        await handleLogin({
-            email, password, navigation
-        });
+export default function Login({ navigation }) {
+  const { colors } = useAppTheme();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const submit = () => {
+    const result = loginFormSchema.safeParse({ email, password });
+    if (!result.success) {
+      setErrors(getFieldErrors(result));
+      return;
     }
+    navigation.replace('MainTabs');
+  };
 
   return (
-    <View className="flex-1 justify-center px-6 py-12">
+    <Screen contentClassName="min-h-full px-5 pb-10">
+      <View className="mt-8">
+        <BrandMark />
+      </View>
 
-        <View className="w-full items-center mb-10">
-             <Text className="mt-10 text-center text-2xl font-bold text-gray-900">
-                PassTrack
-            </Text>
-            <Text className='text-gray-400'>your accounts, all in one place.</Text>
-        </View>
+      <View className="mt-12">
+        <Text className="text-[30px] font-semibold text-ink">Welcome back</Text>
+        <Text className="mt-2 max-w-[310px] text-[15px] leading-6 text-muted">
+          Your private space for the accounts that matter.
+        </Text>
+      </View>
 
-        <View className="mt-10 w-full">
-           
-           <View className = 'mt-2'>
-                <Text className="block text-sm/6 font-medium text-gray-900">Email Address</Text>
-                    <View className='mb-2'>
-                        <TextField
-                            IDs="email"
-                            Name="Email Address"
-                            Type="email"
-                            RequireAutocomplete={true}
-                            value = {email}
-                            onChangeText = {setEmail}
-                            />
-                    </View>
-            </View>
-        
-           <View className = 'mt-2'>
-                <View className = "flex-row items-center justify-between">
-                    <Text className="block text-sm/6 font-medium text-gray-900">Password</Text>
-                </View>
-                    <View className='mb-2'>
-                        <TextField
-                                IDs="password"
-                                Name="Password"
-                                Type="password"
-                                RequireAutocomplete={true}
-                                value = {password}
-                                onChangeText = {setPassword}
-                                />
-                    </View>
-            </View>
+      <View className="mt-9">
+        <Field
+          label="Email address"
+          placeholder="alex@example.com"
+          value={email}
+          onChangeText={(value) => {
+            setEmail(value);
+            setErrors((current) => ({ ...current, email: undefined }));
+          }}
+          error={errors.email}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          icon={<Mail size={18} color={colors.muted} />}
+        />
+        <PasswordField
+          value={password}
+          onChangeText={(value) => {
+            setPassword(value);
+            setErrors((current) => ({ ...current, password: undefined }));
+          }}
+          error={errors.password}
+          autoComplete="current-password"
+        />
+        <Pressable
+          onPress={() => navigation.navigate('ForgotPassword')}
+          className="min-h-11 self-end justify-center"
+        >
+          <Text className="text-sm font-semibold text-accent">Forgot password?</Text>
+        </Pressable>
+      </View>
 
-            <View className = 'mt-8'>
-                <Button name="Log in" onPress={()=> {
-                    console.log('login pressed');
-                    handleSubmit();
-                }}variant="primary" size={65}/>
-            </View>
+      <View className="mt-5">
+        <PrimaryButton label="Sign in" onPress={submit} />
+      </View>
 
+      <View className="my-6 flex-row items-center">
+        <View className="h-px flex-1 bg-line" />
+        <Text className="mx-3 text-xs text-muted">Or continue with</Text>
+        <View className="h-px flex-1 bg-line" />
+      </View>
 
-            <View className='items-center mt-2'>
-                <Text class="mt-10 text-center text-sm/6 text-gray-500">
-                    Dont Have an Account? < Pressable onPress={() => navigation.navigate("register")}><Text className = "font-semibold text-indigo-600 hover:text-indigo-500">Sign UP</Text></Pressable>
-                </Text>
-                <Pressable onPress={() => Linking.openURL('https://youtube.com')}>
-                    <Text className = "font-semibold text-indigo-600 hover:text-indigo-500">Forgot Password</Text>
-                </Pressable>
-            </View>
-  
-        </View>
-    </View>
+      <View>
+        {providers.map((provider) => (
+          <ProviderButton
+            key={provider.name}
+            provider={provider}
+            inkColor={colors.ink}
+            onPress={() => navigation.replace('MainTabs')}
+          />
+        ))}
+      </View>
+
+      <View className="my-4 flex-row items-center">
+        <View className="h-px flex-1 bg-line" />
+        <Text className="mx-3 text-xs text-muted">New to PassTrack?</Text>
+        <View className="h-px flex-1 bg-line" />
+      </View>
+
+      <SecondaryButton label="Create an account" onPress={() => navigation.navigate('Register')} />
+
+      <View className="mt-10 flex-row items-center justify-center">
+        <View className="h-2 w-2 rounded-full bg-accent" />
+        <Text className="ml-2 text-xs text-muted">Your vault locks when you leave</Text>
+      </View>
+    </Screen>
   );
-};
-
-export default Login;
+}
